@@ -55,18 +55,27 @@ const map = new maplibregl.Map({
                 },
             },
         ],
-        terrain: {
-            source: "linz-elevation",
-            exaggeration: 1,
-        },
     },
     center: [174.886, -40.9006], // Slightly adjusted for better NZ view
     zoom: 5,
-    pitch: 45,
+    pitch: 0,
     maxPitch: 85,
 });
 
-map.addControl(new maplibregl.NavigationControl());
+map.addControl(
+    new maplibregl.NavigationControl({
+        visualizePitch: true,
+        visualizeRoll: true,
+        showCompass: true,
+    }),
+);
+
+map.addControl(
+    new maplibregl.TerrainControl({
+        source: "linz-elevation",
+        exaggeration: 1,
+    }),
+);
 
 // Build Legend
 const legend = document.getElementById("legend");
