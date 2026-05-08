@@ -77,7 +77,7 @@ map.addControl(
     }),
 );
 
-// Build Legend
+// Display legend
 function updateLegend(min, max) {
     const legend = document.getElementById("legend");
     // Clear existing items except the title
@@ -112,42 +112,10 @@ function updateLegend(min, max) {
     }
 }
 
-// Initial legend
-updateLegend(0, 2000);
+let currentMin = undefined;
+let currentMax = undefined;
 
-let currentMin = 0;
-let currentMax = 2000;
-
-function updateElevationRange() {
-    const canvas = map.getCanvas();
-    const width = canvas.width;
-    const height = canvas.height;
-    const numPixels = width * height;
-    const maxSamples = 100000;
-
-    // Calculate sampling step to check at most maxSamples pixels
-    const step = Math.max(1, Math.sqrt(numPixels / maxSamples));
-
-    let min = Infinity;
-    let max = -Infinity;
-
-    for (let y = 0; y < height; y += step) {
-        for (let x = 0; x < width; x += step) {
-            const elevation = map.queryTerrainElevation({ x, y });
-            if (elevation !== null && elevation !== undefined) {
-                if (elevation < min) min = elevation;
-                if (elevation > max) max = elevation;
-            }
-        }
-    }
-
-    // Handle cases where no elevation was found or min == max
-    if (min === Infinity || max === -Infinity || min === max) {
-        min = 0;
-        max = 2000;
-    }
-
-    // Only update if the range has changed significantly (to avoid unnecessary re-renders)
+function updateElevationRange(min, max) {
     if (min !== currentMin || max !== currentMax) {
         currentMin = min;
         currentMax = max;
@@ -166,6 +134,91 @@ function updateElevationRange() {
     }
 }
 
-map.on("idle", () => {
-    updateElevationRange();
+function getCurrentElevationRange() {
+    if (!map.terrain) {
+        console.log(
+            "Elevation range defaulting to 0–2000 m as terrain not enabled",
+        );
+        return updateElevationRange(0, 2000);
+    }
+
+    const maxElevationSamples = 1000;
+
+    const canvas = map.getCanvas();
+    const width = canvas.width;
+    const height = canvas.height;
+
+    // Calculate sampling step to check at most maxSamples pixels
+    const step = Math.sqrt((width * height) / maxElevationSamples);
+
+    const bounds = map.getBounds();
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+
+    const horizontal_n_steps = Math.ceil(width / step);
+    const vertical_n_steps = Math.ceil(height / step);
+    const lngStep = (ne.lng - sw.lng) / horizontal_n_steps;
+    const latStep = (ne.lat - sw.lat) / vertical_n_steps;
+
+    let min = Infinity;
+    let max = -Infinity;
+
+    for (let i = 0; i <= horizontal_n_steps; i++) {
+        for (let j = 0; j <= vertical_n_steps; j++) {
+            const lng = sw.lng + i * lngStep;
+            const lat = sw.lat + j * latStep;
+
+            const elev = map.queryTerrainElevation([lng, lat]);
+
+            if (elev !== null) {
+                if (elev > max) {
+                    max = elev;
+                }
+                if (elev < min) {
+                    min = elev;
+                }
+            }
+        }
+    }
+
+    //Sanity check
+    if (min < 0) {
+        min = 0;
+    }
+    if (max === -Infinity || max === Infinity) {
+        max = 2000;
+    }
+    if (min == max) {
+        min = 0;
+        max = 2000;
+    }
+
+    //Round appropriately
+    if (max - min < 10) {
+        //1dp
+        min = Math.round(min * 10) / 10;
+        max = Math.round(max * 10) / 10;
+    } else if (max - min < 100) {
+        //0dp
+        min = Math.floor(min);
+        max = Math.ceil(max);
+    } else if (max - min < 1000) {
+        //Nearest 10
+        min = Math.floor(min / 10) * 10;
+        max = Math.ceil(max / 10) * 10;
+    } else {
+        //Nearest 100
+        min = Math.floor(min / 100) * 100;
+        max = Math.ceil(max / 100) * 100;
+    }
+
+    updateElevationRange(min, max);
+}
+
+map.on("load", () => {
+    getCurrentElevationRange(map);
+});
+
+map.on("moveend", () => {
+    getCurrentElevationRange(map);
 });
