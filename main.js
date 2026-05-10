@@ -196,28 +196,36 @@ function getCurrentElevationRange() {
     if (max === -Infinity || max === Infinity) {
         max = 2000;
     }
-    if (min == max) {
-        min = 0;
-        max = 2000;
-    }
 
     //Round appropriately
     if (max - min < 10) {
         //1dp
         min = Math.round(min * 10) / 10;
         max = Math.round(max * 10) / 10;
+        if (min == max) {
+            max = min + 0.1;
+        }
     } else if (max - min < 100) {
         //0dp
         min = Math.floor(min);
         max = Math.ceil(max);
+        if (min == max) {
+            max = min + 1;
+        }
     } else if (max - min < 1000) {
         //Nearest 10
         min = Math.floor(min / 10) * 10;
         max = Math.ceil(max / 10) * 10;
+        if (min == max) {
+            max = min + 10;
+        }
     } else {
         //Nearest 100
         min = Math.floor(min / 100) * 100;
         max = Math.ceil(max / 100) * 100;
+        if (min == max) {
+            max = min + 100;
+        }
     }
 
     updateElevationRange(min, max);
