@@ -63,6 +63,10 @@ const map = new maplibregl.Map({
                 },
             },
         ],
+        terrain: {
+            source: "terrain-3D",
+            exaggeration: 1,
+        },
     },
     center: [174.886, -40.9006], // Slightly adjusted for better NZ view
     zoom: 5,
