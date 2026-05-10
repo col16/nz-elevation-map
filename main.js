@@ -144,9 +144,6 @@ function updateElevationRange(min, max) {
 
 function getCurrentElevationRange() {
     if (!map.terrain) {
-        console.log(
-            "Elevation range defaulting to 0–2000 m as terrain not enabled",
-        );
         return updateElevationRange(0, 2000);
     }
 
@@ -237,4 +234,14 @@ map.on("load", () => {
 
 map.on("moveend", () => {
     getCurrentElevationRange(map);
+});
+
+map.on("terrain", () => {
+    if (!map.terrain) {
+        console.log(
+            "Elevation range defaulting to 0–2000 m as terrain not enabled",
+        );
+    } else {
+        console.log("Elevation range will be auto-updated");
+    }
 });
