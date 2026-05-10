@@ -32,13 +32,6 @@ const map = new maplibregl.Map({
         },
         layers: [
             {
-                id: "background",
-                type: "background",
-                paint: {
-                    "background-color": "#f0f0f0",
-                },
-            },
-            {
                 id: "elevation-color",
                 type: "color-relief",
                 source: "terrain-colour",
@@ -48,7 +41,7 @@ const map = new maplibregl.Map({
                         ["linear"],
                         ["elevation"],
                         0,
-                        "rgb(144, 238, 144)", // lightgreen
+                        "rgb(239, 255, 239)", // lightgreen
                         2000,
                         "rgb(0, 100, 0)", // darkgreen
                     ],
@@ -59,7 +52,8 @@ const map = new maplibregl.Map({
                 type: "hillshade",
                 source: "terrain-colour",
                 paint: {
-                    "hillshade-exaggeration": 0.5,
+                    "hillshade-exaggeration": 0.25,
+                    "hillshade-method": "combined",
                 },
             },
         ],
@@ -137,7 +131,7 @@ function updateElevationRange(min, max) {
             ["linear"],
             ["elevation"],
             min,
-            "rgb(144, 238, 144)",
+            "rgb(239, 255, 239)",
             max,
             "rgb(0, 100, 0)",
         ]);
