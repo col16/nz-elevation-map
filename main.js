@@ -13,7 +13,15 @@ const map = new maplibregl.Map({
     style: {
         version: 8,
         sources: {
-            "linz-elevation": {
+            "terrain-3D": {
+                type: "raster-dem",
+                tiles: [
+                    `https://basemaps.linz.govt.nz/v1/tiles/elevation/WebMercatorQuad/{z}/{x}/{y}.png?api=${apiKey}&pipeline=terrain-rgb`,
+                ],
+                tileSize: 256,
+                encoding: "mapbox",
+            },
+            "terrain-colour": {
                 type: "raster-dem",
                 tiles: [
                     `https://basemaps.linz.govt.nz/v1/tiles/elevation/WebMercatorQuad/{z}/{x}/{y}.png?api=${apiKey}&pipeline=terrain-rgb`,
@@ -33,7 +41,7 @@ const map = new maplibregl.Map({
             {
                 id: "elevation-color",
                 type: "color-relief",
-                source: "linz-elevation",
+                source: "terrain-colour",
                 paint: {
                     "color-relief-color": [
                         "interpolate",
@@ -49,7 +57,7 @@ const map = new maplibregl.Map({
             {
                 id: "hillshading",
                 type: "hillshade",
-                source: "linz-elevation",
+                source: "terrain-colour",
                 paint: {
                     "hillshade-exaggeration": 0.5,
                 },
@@ -72,7 +80,7 @@ map.addControl(
 
 map.addControl(
     new maplibregl.TerrainControl({
-        source: "linz-elevation",
+        source: "terrain-3D",
         exaggeration: 1,
     }),
 );
