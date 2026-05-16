@@ -1,12 +1,15 @@
 import "./style.css";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { buildMapLibreColours, colourmaps } from "./colourmaps.ts";
 
 const apiKey = import.meta.env.VITE_LINZ_API_KEY;
 
 if (!apiKey) {
     console.error("VITE_LINZ_API_KEY is not defined in .env");
 }
+
+let colourmap = "naviaW_reversed";
 
 const map = new maplibregl.Map({
     container: "map",
@@ -40,10 +43,7 @@ const map = new maplibregl.Map({
                         "interpolate",
                         ["linear"],
                         ["elevation"],
-                        0,
-                        "rgb(239, 255, 239)", // lightgreen
-                        2000,
-                        "rgb(0, 100, 0)", // darkgreen
+                        ...buildMapLibreColours(0, 2000, colourmap),
                     ],
                 },
             },
@@ -85,37 +85,31 @@ map.addControl(
 
 // Display legend
 function updateLegend(min, max) {
-    const legend = document.getElementById("legend");
-    // Clear existing items except the title
-    const title = legend.querySelector("h4");
-    legend.innerHTML = "";
-    legend.appendChild(title);
+    const precision = max - min < 10 ? 1 : 0; //to update
 
-    const steps = 5;
-    const range = max - min;
-    const precision = range < 10 ? 1 : 0;
+    const cm = colourmaps[colourmap];
+    const canvas = document.getElementById("legend-canvas");
+    const ctx = canvas.getContext("2d");
 
-    for (let i = 0; i <= steps; i++) {
-        const val = min + (max - min) * (i / steps);
-        const item = document.createElement("div");
-        item.className = "legend-item";
+    // Create a linear gradient (x0, y0, x1, y1)
+    const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
 
-        const color = document.createElement("span");
-        color.className = "legend-color";
-
-        const ratio = i / steps;
-        const r = Math.round(144 + (0 - 144) * ratio);
-        const g = Math.round(238 + (100 - 238) * ratio);
-        const b = Math.round(144 + (0 - 144) * ratio);
-        color.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
-
-        const label = document.createElement("span");
-        label.innerText = `${val.toFixed(precision)}m`;
-
-        item.appendChild(color);
-        item.appendChild(label);
-        legend.appendChild(item);
+    for (let i = 0; i < 256; i++) {
+        gradient.addColorStop(
+            i / 255,
+            `rgb(${cm[i][0] * 255}, ${cm[i][1] * 255}, ${cm[i][2] * 255})`,
+        );
     }
+
+    // Fill the canvas
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    document.getElementById("max-elevation-label").innerHTML =
+        `${max.toFixed(precision)}m`;
+
+    document.getElementById("min-elevation-label").innerHTML =
+        `${min.toFixed(precision)}m`;
 }
 
 let currentMin = undefined;
@@ -130,10 +124,7 @@ function updateElevationRange(min, max) {
             "interpolate",
             ["linear"],
             ["elevation"],
-            min,
-            "rgb(239, 255, 239)",
-            max,
-            "rgb(0, 100, 0)",
+            ...buildMapLibreColours(min, max, colourmap),
         ]);
 
         updateLegend(min, max);
@@ -200,6 +191,7 @@ function getCurrentElevationRange() {
         if (min == max) {
             max = min + 0.1;
         }
+        precision = 0.1;
     } else if (max - min < 100) {
         //0dp
         min = Math.floor(min);
