@@ -112,6 +112,10 @@
             onRangeUpdate(0, 2000);
             return;
         }
+        if (map?.getZoom() < 8) {
+            onRangeUpdate(0, 2000);
+            return;
+        }
 
         const maxElevationSamples = 2000;
         const canvas = map.getCanvas();
@@ -149,7 +153,7 @@
         if (min_val < 0) min_val = 0;
         if (max_val === -Infinity || max_val === Infinity) max_val = 2000;
 
-        // Rounding logic from original main.js
+        // Rounding logic
         if (max_val - min_val < 10) {
             min_val = Math.round(min_val * 10) / 10;
             max_val = Math.round(max_val * 10) / 10;
