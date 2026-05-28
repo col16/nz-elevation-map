@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import maplibregl from 'maplibre-gl';
-    import 'maplibre-gl/dist/maplibre-gl.css';
-    import { buildMapLibreColours } from '../colourmaps';
+    import { onMount } from "svelte";
+    import maplibregl from "maplibre-gl";
+    import "maplibre-gl/dist/maplibre-gl.css";
+    import { buildMapLibreColours } from "../colourmaps";
 
     interface Props {
         onRangeUpdate: (min: number, max: number) => void;
@@ -97,16 +97,8 @@
             }),
         );
 
-        map.on("load", () => {
-            getCurrentElevationRange();
-        });
-
-        map.on("moveend", () => {
-            getCurrentElevationRange();
-        });
-
         map.on("idle", () => {
-             getCurrentElevationRange();
+            getCurrentElevationRange();
         });
 
         return () => {
@@ -121,7 +113,7 @@
             return;
         }
 
-        const maxElevationSamples = 1000;
+        const maxElevationSamples = 2000;
         const canvas = map.getCanvas();
         const width = canvas.width;
         const height = canvas.height;
@@ -180,14 +172,24 @@
     }
 
     $effect(() => {
-        if (map && map.loaded()) {
-            map.setPaintProperty("elevation-color", "color-relief-color", [
-                "interpolate",
-                ["linear"],
-                ["elevation"],
-                ...buildMapLibreColours(min, max, colourmap),
-            ]);
+        //Re-colour map
+        let low = min;
+        let high = max;
+        let cm = colourmap;
+
+        if (map == undefined) {
+            return;
         }
+        if (!map.isStyleLoaded()) {
+            return;
+        }
+
+        map.setPaintProperty("elevation-color", "color-relief-color", [
+            "interpolate",
+            ["linear"],
+            ["elevation"],
+            ...buildMapLibreColours(low, high, cm),
+        ]);
     });
 </script>
 
