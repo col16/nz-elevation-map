@@ -66,7 +66,7 @@
                         type: "hillshade",
                         source: "terrain-colour",
                         paint: {
-                            "hillshade-exaggeration": 0.25,
+                            "hillshade-exaggeration": 0.4,
                             "hillshade-method": "combined",
                         },
                     },
