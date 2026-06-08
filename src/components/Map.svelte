@@ -25,6 +25,12 @@
 
         if (!mapContainer) return;
 
+        const initialPosition = getPositionFromURLHash() || {
+            zoom: 5,
+            lng: 174.886,
+            lat: -40.9006,
+        };
+
         map = new maplibregl.Map({
             container: mapContainer,
             style: {
@@ -76,8 +82,8 @@
                     exaggeration: 1,
                 },
             },
-            center: [174.886, -40.9006],
-            zoom: 5,
+            center: [initialPosition.lng, initialPosition.lat],
+            zoom: initialPosition.zoom,
             pitch: 0,
             maxPitch: 85,
         });
@@ -101,10 +107,54 @@
             getCurrentElevationRange();
         });
 
+        map.on("moveend", updateURLHashWithPosition);
+
+        // Handle browser back/forward buttons
+        const handleHashChange = () => {
+            const pos = getPositionFromURLHash();
+            if (pos && map != undefined) {
+                map.jumpTo({
+                    center: [pos.lng, pos.lat],
+                    zoom: pos.zoom,
+                });
+            }
+        };
+
+        window.addEventListener("hashchange", handleHashChange);
+
         return () => {
-            map?.remove();
+            if (map) map.remove();
+            window.removeEventListener("hashchange", handleHashChange);
         };
     });
+
+    function getPositionFromURLHash() {
+        let params = new URLSearchParams(document.location.search);
+        const zoom = parseFloat(params.get("z") ?? "");
+        const lat = parseFloat(params.get("lat") ?? "");
+        const lng = parseFloat(params.get("lng") ?? "");
+
+        // Basic validation
+        if (!isNaN(zoom) && !isNaN(lat) && !isNaN(lng)) {
+            return { zoom, lng, lat };
+        } else {
+            return null;
+        }
+    }
+
+    function updateURLHashWithPosition() {
+        if (!map) return;
+
+        const center = map.getCenter();
+        const params = new URLSearchParams([
+            ["lat", center.lat.toFixed(5)],
+            ["lng", center.lng.toFixed(5)],
+            ["z", map.getZoom().toFixed(2)],
+        ]);
+
+        // Replace state instead of push state to avoid cluttering browser history on every drag
+        history.replaceState(undefined, "", "?" + params.toString());
+    }
 
     function getCurrentElevationRange() {
         if (!map) return;
