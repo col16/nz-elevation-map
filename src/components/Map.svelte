@@ -75,8 +75,8 @@
                         type: "hillshade",
                         source: "terrain-colour",
                         paint: {
-                            "hillshade-exaggeration": 0.4,
-                            "hillshade-method": "combined",
+                            "hillshade-exaggeration": 0.5,
+                            "hillshade-method": "igor",
                         },
                     },
                 ],
