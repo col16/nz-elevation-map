@@ -29,6 +29,9 @@
             zoom: 5,
             lng: 174.886,
             lat: -40.9006,
+            bearing: 0,
+            pitch: 0,
+            roll: 0,
         };
 
         map = new maplibregl.Map({
@@ -84,7 +87,9 @@
             },
             center: [initialPosition.lng, initialPosition.lat],
             zoom: initialPosition.zoom,
-            pitch: 0,
+            bearing: initialPosition.bearing,
+            pitch: initialPosition.pitch,
+            roll: initialPosition.roll,
             maxPitch: 85,
         });
 
@@ -133,10 +138,20 @@
         const zoom = parseFloat(params.get("z") ?? "");
         const lat = parseFloat(params.get("lat") ?? "");
         const lng = parseFloat(params.get("lng") ?? "");
+        const bearing = parseFloat(params.get("b") ?? "0");
+        const pitch = parseFloat(params.get("p") ?? "0");
+        const roll = parseFloat(params.get("r") ?? "0");
 
         // Basic validation
-        if (!isNaN(zoom) && !isNaN(lat) && !isNaN(lng)) {
-            return { zoom, lng, lat };
+        if (
+            !isNaN(zoom) &&
+            !isNaN(lat) &&
+            !isNaN(lng) &&
+            !isNaN(bearing) &&
+            !isNaN(pitch) &&
+            !isNaN(roll)
+        ) {
+            return { zoom, lng, lat, bearing, pitch, roll };
         } else {
             return null;
         }
@@ -151,6 +166,18 @@
             ["lng", center.lng.toFixed(5)],
             ["z", map.getZoom().toFixed(2)],
         ]);
+        const bearing = map.getBearing();
+        if (bearing != 0) {
+            params.set("b", bearing.toFixed(2));
+        }
+        const pitch = map.getPitch();
+        if (pitch != 0) {
+            params.set("p", pitch.toFixed(2));
+        }
+        const roll = map.getRoll();
+        if (roll != 0) {
+            params.set("r", roll.toFixed(2));
+        }
 
         // Replace state instead of push state to avoid cluttering browser history on every drag
         history.replaceState(undefined, "", "?" + params.toString());
