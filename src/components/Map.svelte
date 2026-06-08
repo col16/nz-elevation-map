@@ -3,6 +3,7 @@
     import maplibregl from "maplibre-gl";
     import "maplibre-gl/dist/maplibre-gl.css";
     import { buildMapLibreColours } from "../colourmaps";
+    import { createMap } from "./map";
 
     interface Props {
         onRangeUpdate: (min: number, max: number) => void;
@@ -34,64 +35,7 @@
             roll: 0,
         };
 
-        map = new maplibregl.Map({
-            container: mapContainer,
-            style: {
-                version: 8,
-                sources: {
-                    "terrain-3D": {
-                        type: "raster-dem",
-                        tiles: [
-                            `https://basemaps.linz.govt.nz/v1/tiles/elevation/WebMercatorQuad/{z}/{x}/{y}.png?api=${apiKey}&pipeline=terrain-rgb`,
-                        ],
-                        tileSize: 256,
-                        encoding: "mapbox",
-                    },
-                    "terrain-colour": {
-                        type: "raster-dem",
-                        tiles: [
-                            `https://basemaps.linz.govt.nz/v1/tiles/elevation/WebMercatorQuad/{z}/{x}/{y}.png?api=${apiKey}&pipeline=terrain-rgb`,
-                        ],
-                        tileSize: 256,
-                        encoding: "mapbox",
-                    },
-                },
-                layers: [
-                    {
-                        id: "elevation-color",
-                        type: "color-relief",
-                        source: "terrain-colour",
-                        paint: {
-                            "color-relief-color": [
-                                "interpolate",
-                                ["linear"],
-                                ["elevation"],
-                                ...buildMapLibreColours(0, 2000, colourmap),
-                            ],
-                        },
-                    },
-                    {
-                        id: "hillshading",
-                        type: "hillshade",
-                        source: "terrain-colour",
-                        paint: {
-                            "hillshade-exaggeration": 0.5,
-                            "hillshade-method": "igor",
-                        },
-                    },
-                ],
-                terrain: {
-                    source: "terrain-3D",
-                    exaggeration: 1,
-                },
-            },
-            center: [initialPosition.lng, initialPosition.lat],
-            zoom: initialPosition.zoom,
-            bearing: initialPosition.bearing,
-            pitch: initialPosition.pitch,
-            roll: initialPosition.roll,
-            maxPitch: 85,
-        });
+        map = createMap(initialPosition, colourmap, mapContainer);
 
         map.addControl(
             new maplibregl.NavigationControl({
