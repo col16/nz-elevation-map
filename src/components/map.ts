@@ -72,7 +72,7 @@ export function createMap(
                     type: "line",
                     source: "LINZ Basemaps",
                     "source-layer": "water_polygons",
-                    minzoom: 11,
+                    minzoom: 8,
                     filter: [
                         "any",
                         ["==", "water", "lake"],
@@ -83,7 +83,7 @@ export function createMap(
                     layout: {
                         "line-cap": "round",
                         "line-join": "round",
-                        visibility: "none",
+                        visibility: "visible",
                     },
                     paint: {
                         "line-color": [
@@ -148,6 +148,9 @@ export function createMap(
                         "fill-antialias": true,
                         "fill-color": "rgba(184, 220, 242, 1)",
                     },
+                    layout: {
+                        visibility: "none",
+                    },
                 },
                 {
                     id: "TL-Water-Lake",
@@ -157,7 +160,7 @@ export function createMap(
                     minzoom: 0,
                     filter: ["all", ["==", "water", "lake"]],
                     layout: {
-                        visibility: "visible",
+                        visibility: "none",
                     },
                     paint: {
                         "fill-antialias": true,
@@ -175,7 +178,7 @@ export function createMap(
                     maxzoom: 13,
                     filter: ["all", ["==", "water", "lake"], ["has", "name"]],
                     layout: {
-                        visibility: "visible",
+                        visibility: "none",
                     },
                     paint: {
                         "fill-antialias": true,
@@ -271,7 +274,7 @@ export function createMap(
                     maxzoom: 21,
                     filter: ["all", ["==", "kind", "canal"]],
                     layout: {
-                        visibility: "none",
+                        visibility: "visible",
                     },
                     paint: {
                         "line-color": [
@@ -308,7 +311,7 @@ export function createMap(
                     maxzoom: 21,
                     filter: ["all", ["==", "kind", "drain"]],
                     layout: {
-                        visibility: "none",
+                        visibility: "visible",
                     },
                     paint: {
                         "line-color": [
@@ -345,7 +348,7 @@ export function createMap(
                     minzoom: 12,
                     filter: ["all", ["==", "kind", "dry_dock"]],
                     layout: {
-                        visibility: "none",
+                        visibility: "visible",
                     },
                     paint: {
                         "line-color": "rgba(73, 73, 73, 1)",
@@ -371,7 +374,7 @@ export function createMap(
                     maxzoom: 21,
                     filter: ["all", ["==", "kind", "river"]],
                     layout: {
-                        visibility: "none",
+                        visibility: "visible",
                     },
                     paint: {
                         "line-color": [
@@ -405,7 +408,7 @@ export function createMap(
                     maxzoom: 13,
                     filter: ["all", ["==", "kind", "river"], ["has", "name"]],
                     layout: {
-                        visibility: "none",
+                        visibility: "visible",
                     },
                     paint: {
                         "line-color": [
@@ -443,7 +446,7 @@ export function createMap(
                     "source-layer": "water_lines",
                     filter: ["all", ["==", "kind", "water_race"]],
                     layout: {
-                        visibility: "none",
+                        visibility: "visible",
                     },
                     paint: {
                         "line-color": [
@@ -469,7 +472,7 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(0, 100, 187, 0.5)",
+                        "line-color": "rgba(0, 0, 0, 0.25)",
                         "line-translate-anchor": "map",
                         "line-width": [
                             "interpolate",
@@ -2330,7 +2333,7 @@ export function createMap(
                     type: "symbol",
                     source: "LINZ Basemaps",
                     "source-layer": "place_labels",
-                    minzoom: 7,
+                    minzoom: 8,
                     maxzoom: 11,
                     filter: ["any", ["==", "place", "lake"]],
                     layout: {
@@ -2600,7 +2603,7 @@ export function createMap(
                         "text-font": ["Open Sans Bold Italic"],
                         "text-max-width": 4,
                         "text-size": 12,
-                        visibility: "visible",
+                        visibility: "none",
                     },
                     paint: {
                         "text-color": "rgba(0, 140, 204, 1)",
@@ -2767,6 +2770,7 @@ export function createMap(
                     type: "symbol",
                     source: "LINZ Basemaps",
                     "source-layer": "place_labels",
+                    minzoom: 8,
                     maxzoom: 14,
                     filter: [
                         "all",
@@ -2810,7 +2814,7 @@ export function createMap(
                         "text-font": ["Open Sans Bold"],
                         "text-max-width": 4,
                         "text-size": 10,
-                        visibility: "visible",
+                        visibility: "none",
                     },
                     paint: {
                         "text-color": [
