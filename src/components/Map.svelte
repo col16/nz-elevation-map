@@ -45,6 +45,15 @@
             }),
         );
 
+        const geolocate = new maplibregl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true,
+            },
+            trackUserLocation: true,
+            showUserLocation: true,
+        });
+        map.addControl(geolocate);
+
         map.addControl(
             new maplibregl.TerrainControl({
                 source: "terrain-3D",
