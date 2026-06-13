@@ -54,6 +54,12 @@
         });
         map.addControl(geolocate);
 
+        let scale = new maplibregl.ScaleControl({
+            maxWidth: 160,
+            unit: "metric",
+        });
+        map.addControl(scale, "bottom-right");
+
         map.addControl(
             new maplibregl.TerrainControl({
                 source: "terrain-3D",
