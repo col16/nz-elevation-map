@@ -1,7 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
+
     import maplibregl from "maplibre-gl";
     import "maplibre-gl/dist/maplibre-gl.css";
+
+    import MaplibreGeocoder from "@maplibre/maplibre-gl-geocoder";
+    import type {
+        MaplibreGeocoderApi,
+        MaplibreGeocoderApiConfig,
+        MaplibreGeocoderFeatureResults,
+    } from "@maplibre/maplibre-gl-geocoder";
+    import "@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css";
+
     import { buildMapLibreColours } from "../colourmaps";
     import { createMap } from "./map";
 
@@ -16,6 +26,8 @@
 
     let mapContainer: HTMLDivElement | undefined = $state();
     let map: maplibregl.Map | undefined = $state();
+
+    let showTopolite: boolean = $state(true);
 
     const apiKey = import.meta.env.VITE_LINZ_API_KEY;
 
@@ -67,8 +79,61 @@
             }),
         );
 
+        const geocoderApi: MaplibreGeocoderApi = {
+            forwardGeocode: async (config: MaplibreGeocoderApiConfig) => {
+                const features = [];
+                try {
+                    const request = `https://nominatim.openstreetmap.org/search?q=${
+                        config.query
+                    }&format=geojson&polygon_geojson=1&addressdetails=1&countrycodes=nz`;
+                    const response = await fetch(request);
+                    const geojson = await response.json();
+                    for (const feature of geojson.features) {
+                        const center: [number, number] = [
+                            feature.bbox[0] +
+                                (feature.bbox[2] - feature.bbox[0]) / 2,
+                            feature.bbox[1] +
+                                (feature.bbox[3] - feature.bbox[1]) / 2,
+                        ];
+                        const point = {
+                            type: "Feature" as const,
+                            geometry: {
+                                type: "Point" as const,
+                                coordinates: center,
+                            },
+                            bbox: feature.bbox,
+                            place_name: feature.properties.display_name,
+                            properties: feature.properties,
+                            text: feature.properties.display_name,
+                            place_type: ["place"],
+                            center,
+                        };
+                        features.push(point);
+                    }
+                } catch (e) {
+                    console.error(`Failed to forwardGeocode with error: ${e}`);
+                }
+
+                return {
+                    features,
+                    type: "FeatureCollection",
+                };
+            },
+        };
+        map.addControl(
+            new MaplibreGeocoder(geocoderApi, {
+                maplibregl,
+                trackProximity: true,
+                zoom: 12,
+                placeholder: "Search and press Enter",
+                showResultMarkers: false,
+            }),
+            "top-left",
+        );
+
         map.on("idle", () => {
             getCurrentElevationRange();
+            console.log(map?.getZoom());
         });
 
         map.on("moveend", updateURLHashWithPosition);
