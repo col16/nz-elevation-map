@@ -14,6 +14,7 @@ export function createMap(
     mapContainer: HTMLDivElement,
 ): maplibregl.Map {
     const apiKey = import.meta.env.VITE_LINZ_API_KEY;
+    const currentYear = new Date().getFullYear();
 
     return new maplibregl.Map({
         container: mapContainer,
@@ -37,7 +38,7 @@ export function createMap(
                     encoding: "mapbox",
                 },
                 "LINZ Basemaps": {
-                    attribution: "© 2022 Toitū Te Whenua - CC BY 4.0",
+                    attribution: `Map data © ${currentYear} Toitū Te Whenua LINZ - CC BY 4.0`,
                     type: "vector",
                     url: "https://basemaps.linz.govt.nz/v1/tiles/topographic-v2/WebMercatorQuad/tile.json?api=c01kq1gjja2vey6rmmew5fpq2b8",
                 },
