@@ -40,7 +40,7 @@ export function createMap(
                 "LINZ Basemaps": {
                     attribution: `Map data © ${currentYear} Toitū Te Whenua LINZ - CC BY 4.0`,
                     type: "vector",
-                    url: "https://basemaps.linz.govt.nz/v1/tiles/topographic-v2/WebMercatorQuad/tile.json?api=c01kq1gjja2vey6rmmew5fpq2b8",
+                    url: `https://basemaps.linz.govt.nz/v1/tiles/topographic-v2/WebMercatorQuad/tile.json?api=${apiKey}`,
                 },
             },
             sprite: "https://basemaps.linz.govt.nz/v1/sprites/topographic",
