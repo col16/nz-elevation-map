@@ -28,21 +28,24 @@ A 3D elevation map of New Zealand using MapLibre GL JS, Svelte 5, and Tailwind C
    Create a `.env` file in the root directory and add your LINZ API key:
    ```env
    VITE_LINZ_API_KEY=your_linz_api_key_here
-   ```
 
-3. **Run development server**:
-   ```bash
-   npm run dev
-   ```
+## Developing
 
-4. **Build for production**:
-   ```bash
-   npm run build
-   ```
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
-## Project Structure
+```sh
+npm run dev
 
-- `src/App.svelte`: Main application component.
-- `src/components/Map.svelte`: MapLibre integration and elevation logic.
-- `src/components/Legend.svelte`: Elevation legend visualization.
-- `src/colourmaps.ts`: Color scale definitions and utilities.
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+To create a production version of your app:
+
+```sh
+npm run build
+```
+
+You can preview the production build with `npm run preview`.

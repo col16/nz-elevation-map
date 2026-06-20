@@ -12,7 +12,7 @@
     } from "@maplibre/maplibre-gl-geocoder";
     import "@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css";
 
-    import { buildMapLibreColours } from "../colourmaps";
+    import { buildMapLibreColours } from "./colourmaps";
     import { createMap } from "./map";
 
     interface Props {

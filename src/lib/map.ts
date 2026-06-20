@@ -1,5 +1,5 @@
 import maplibregl from "maplibre-gl";
-import { buildMapLibreColours } from "../colourmaps";
+import { buildMapLibreColours } from "./colourmaps";
 
 export function createMap(
     initialPosition: {

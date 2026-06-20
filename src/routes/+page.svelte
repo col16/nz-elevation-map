@@ -1,7 +1,6 @@
 <script lang="ts">
-    import Map from './components/Map.svelte';
-    import Legend from './components/Legend.svelte';
-    import type { Component } from 'svelte';
+    import Map from "../lib/Map.svelte";
+    import Legend from "../lib/Legend.svelte";
 
     let min = $state(0);
     let max = $state(2000);

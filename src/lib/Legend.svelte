@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { colourmaps } from '../colourmaps';
+    import { onMount } from "svelte";
+    import { colourmaps } from "./colourmaps";
 
     interface Props {
         min: number;
@@ -49,8 +49,12 @@
     <div class="legend-container">
         <canvas bind:this={canvas}></canvas>
         <div class="legend-labels">
-            <span class="label" id="max-elevation-label">{max.toFixed(precision)}m</span>
-            <span class="label" id="min-elevation-label">{min.toFixed(precision)}m</span>
+            <span class="label" id="max-elevation-label"
+                >{max.toFixed(precision)}m</span
+            >
+            <span class="label" id="min-elevation-label"
+                >{min.toFixed(precision)}m</span
+            >
         </div>
     </div>
 </div>
