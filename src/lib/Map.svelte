@@ -127,7 +127,6 @@
 
         map.on("idle", () => {
             getCurrentElevationRange();
-            console.log(map?.getZoom());
         });
 
         map.on("moveend", updateURLHashWithPosition);

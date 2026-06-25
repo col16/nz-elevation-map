@@ -14,7 +14,6 @@ export function createMap(
     colourmap: string,
     mapContainer: HTMLDivElement,
 ): maplibregl.Map {
-    console.log("LINZ API key is", PUBLIC_LINZ_API_KEY);
     if (!PUBLIC_LINZ_API_KEY) {
         console.error("LINZ API key is not defined");
     }
