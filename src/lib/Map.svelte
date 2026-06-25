@@ -29,13 +29,7 @@
 
     let showTopolite: boolean = $state(true);
 
-    const apiKey = import.meta.env.VITE_LINZ_API_KEY;
-
     onMount(() => {
-        if (!apiKey) {
-            console.error("VITE_LINZ_API_KEY is not defined in .env");
-        }
-
         if (!mapContainer) return;
 
         const initialPosition = getPositionFromURLHash() || {
