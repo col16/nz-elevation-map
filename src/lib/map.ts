@@ -1,5 +1,6 @@
 import maplibregl from "maplibre-gl";
 import { buildMapLibreColours } from "./colourmaps";
+import { PUBLIC_VITE_LINZ_API_KEY } from "$env/static/public";
 
 export function createMap(
     initialPosition: {
@@ -13,7 +14,6 @@ export function createMap(
     colourmap: string,
     mapContainer: HTMLDivElement,
 ): maplibregl.Map {
-    const apiKey = import.meta.env.VITE_LINZ_API_KEY;
     const currentYear = new Date().getFullYear();
 
     return new maplibregl.Map({
@@ -24,7 +24,7 @@ export function createMap(
                 "terrain-3D": {
                     type: "raster-dem",
                     tiles: [
-                        `https://basemaps.linz.govt.nz/v1/tiles/elevation/WebMercatorQuad/{z}/{x}/{y}.png?api=${apiKey}&pipeline=terrain-rgb`,
+                        `https://basemaps.linz.govt.nz/v1/tiles/elevation/WebMercatorQuad/{z}/{x}/{y}.png?api=${PUBLIC_VITE_LINZ_API_KEY}&pipeline=terrain-rgb`,
                     ],
                     tileSize: 256,
                     encoding: "mapbox",
@@ -32,7 +32,7 @@ export function createMap(
                 "terrain-colour": {
                     type: "raster-dem",
                     tiles: [
-                        `https://basemaps.linz.govt.nz/v1/tiles/elevation/WebMercatorQuad/{z}/{x}/{y}.png?api=${apiKey}&pipeline=terrain-rgb`,
+                        `https://basemaps.linz.govt.nz/v1/tiles/elevation/WebMercatorQuad/{z}/{x}/{y}.png?api=${PUBLIC_VITE_LINZ_API_KEY}&pipeline=terrain-rgb`,
                     ],
                     tileSize: 256,
                     encoding: "mapbox",
@@ -40,7 +40,7 @@ export function createMap(
                 "LINZ Basemaps": {
                     attribution: `Map data © ${currentYear} Toitū Te Whenua LINZ - CC BY 4.0`,
                     type: "vector",
-                    url: `https://basemaps.linz.govt.nz/v1/tiles/topographic-v2/WebMercatorQuad/tile.json?api=${apiKey}`,
+                    url: `https://basemaps.linz.govt.nz/v1/tiles/topographic-v2/WebMercatorQuad/tile.json?api=${PUBLIC_VITE_LINZ_API_KEY}`,
                 },
             },
             sprite: "https://basemaps.linz.govt.nz/v1/sprites/topographic",
