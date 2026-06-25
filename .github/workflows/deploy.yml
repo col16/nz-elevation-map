@@ -23,7 +23,7 @@ jobs:
             - name: build
               env:
                   BASE_PATH: "/${{ github.event.repository.name }}"
-                  VITE_LINZ_API_KEY: ${{ vars.VITE_LINZ_API_KEY }}
+                  PUBLIC_VITE_LINZ_API_KEY: ${{ vars.PUBLIC_VITE_LINZ_API_KEY }}
               run: |
                   npm run build
 
