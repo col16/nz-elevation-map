@@ -45,20 +45,32 @@
 </script>
 
 <div id="legend" class="legend">
-    <canvas class="colour-ramp" bind:this={canvas}></canvas>
-    <div class="max-label">
-        <span class="label" id="max-elevation-label"
-            >{max.toFixed(precision)} mRL</span
-        >
-    </div>
-    <div class="min-label">
-        <span class="label" id="min-elevation-label"
-            >{min.toFixed(precision)} mRL</span
-        >
+    <canvas
+        class="colour-ramp w-12 h-32 my-1.5 border border-gray-200"
+        bind:this={canvas}
+    ></canvas>
+
+    <div class="max-label leading-none">
+        <span class="label text-sm leading-none" id="max-elevation-label">
+            {max.toFixed(precision)} mRL
+        </span>
     </div>
 
-    <div class="legend-container">
-        <div class="legend-labels"></div>
+    <div class="min-label leading-none">
+        <span class="label text-sm leading-none" id="min-elevation-label">
+            {min.toFixed(precision)} mRL
+        </span>
+    </div>
+
+    <div class="legend-footer text-gray-400 text-xsm pt-3 whitespace-nowrap">
+        <label for="auto-range">
+            <input
+                type="checkbox"
+                id="auto-range"
+                class="rounded-sm text-gray-400 w-3 h-3"
+                checked
+            /> Auto elevation range
+        </label>
     </div>
 </div>
 
@@ -80,44 +92,34 @@
         font-size: 12px;
         display: grid;
         grid-template-columns: min-content min-content;
-        grid-template-rows: min-content 1fr min-content;
+        grid-template-rows: min-content 1fr min-content min-content;
         gap: 0px 6px;
         grid-template-areas:
             "colour-ramp max-label"
             "colour-ramp ."
-            "colour-ramp min-label";
+            "colour-ramp min-label"
+            "legend-footer legend-footer ";
     }
 
     .colour-ramp {
         grid-area: colour-ramp;
-        margin: 5px 0;
-        border: 1px solid #eee;
-        width: 50px;
-        height: 170px;
-        display: block;
     }
     .max-label {
         grid-area: max-label;
-        line-height: 1;
     }
     .min-label {
         grid-area: min-label;
-        line-height: 1;
+    }
+
+    .legend-footer {
+        grid-area: legend-footer;
+        text-box-trim: both;
     }
 
     .label {
-        font-size: 12px;
         color: #333;
         white-space: nowrap;
     }
 
-    #max-elevation-label {
-        top: 0;
-        transform: translateY(-50%);
-    }
-
-    #min-elevation-label {
-        bottom: 0;
-        transform: translateY(50%);
     }
 </style>
