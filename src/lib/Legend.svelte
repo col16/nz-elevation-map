@@ -45,63 +45,67 @@
 </script>
 
 <div id="legend" class="legend">
-    <h4>Elevation (m)</h4>
+    <canvas class="colour-ramp" bind:this={canvas}></canvas>
+    <div class="max-label">
+        <span class="label" id="max-elevation-label"
+            >{max.toFixed(precision)} mRL</span
+        >
+    </div>
+    <div class="min-label">
+        <span class="label" id="min-elevation-label"
+            >{min.toFixed(precision)} mRL</span
+        >
+    </div>
+
     <div class="legend-container">
-        <canvas bind:this={canvas}></canvas>
-        <div class="legend-labels">
-            <span class="label" id="max-elevation-label"
-                >{max.toFixed(precision)}m</span
-            >
-            <span class="label" id="min-elevation-label"
-                >{min.toFixed(precision)}m</span
-            >
-        </div>
+        <div class="legend-labels"></div>
     </div>
 </div>
 
 <style>
     .legend {
         position: absolute;
-        bottom: 30px;
-        left: 20px;
-        background: rgba(255, 255, 255, 0.9);
+        bottom: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 1);
         padding: 15px;
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         z-index: 10;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        min-width: 120px;
+        font-family:
+            Helvetica Neue,
+            Arial,
+            Helvetica,
+            sans-serif;
+        font-size: 12px;
+        display: grid;
+        grid-template-columns: min-content min-content;
+        grid-template-rows: min-content 1fr min-content;
+        gap: 0px 6px;
+        grid-template-areas:
+            "colour-ramp max-label"
+            "colour-ramp ."
+            "colour-ramp min-label";
     }
 
-    .legend h4 {
-        margin: 0 0 12px;
-        font-size: 14px;
-        color: #333;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 5px;
-    }
-
-    .legend-container {
-        display: flex;
-        flex-direction: row;
-        align-items: stretch;
-        position: relative;
-    }
-
-    .legend canvas {
+    .colour-ramp {
+        grid-area: colour-ramp;
+        margin: 5px 0;
+        border: 1px solid #eee;
         width: 50px;
         height: 170px;
         display: block;
     }
-
-    .legend-labels {
-        position: relative;
-        margin-left: 10px;
-        width: 60px;
+    .max-label {
+        grid-area: max-label;
+        line-height: 1;
+    }
+    .min-label {
+        grid-area: min-label;
+        line-height: 1;
     }
 
     .label {
-        position: absolute;
         font-size: 12px;
         color: #333;
         white-space: nowrap;
