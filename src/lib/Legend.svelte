@@ -2,19 +2,17 @@
     import { onMount } from "svelte";
     import { colourmaps } from "./colourmaps";
 
-    interface Props {
-        min: number;
-        max: number;
-        colourmap: string;
-    }
-
-    let { min, max, colourmap }: Props = $props();
+    import { userState } from "./state.svelte";
 
     let canvas: HTMLCanvasElement | undefined = $state();
 
     $effect(() => {
-        if (canvas && min !== undefined && max !== undefined) {
-            updateLegend(min, max);
+        if (
+            canvas &&
+            userState.min !== undefined &&
+            userState.max !== undefined
+        ) {
+            updateLegend(userState.min, userState.max);
         }
     });
 
@@ -22,7 +20,7 @@
         if (!canvas) return;
         const precision = max - min < 10 ? 1 : 0;
 
-        const cm = colourmaps[colourmap as keyof typeof colourmaps];
+        const cm = colourmaps[userState.colourmap as keyof typeof colourmaps];
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
@@ -41,7 +39,7 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    const precision = $derived(max - min < 10 ? 1 : 0);
+    const precision = $derived(userState.max - userState.min < 10 ? 1 : 0);
 </script>
 
 <div id="legend" class="legend">
@@ -52,13 +50,13 @@
 
     <div class="max-label leading-none">
         <span class="label text-sm leading-none" id="max-elevation-label">
-            {max.toFixed(precision)} mRL
+            {userState.max.toFixed(precision)} mRL
         </span>
     </div>
 
     <div class="min-label leading-none">
         <span class="label text-sm leading-none" id="min-elevation-label">
-            {min.toFixed(precision)} mRL
+            {userState.min.toFixed(precision)} mRL
         </span>
     </div>
 

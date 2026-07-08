@@ -15,19 +15,17 @@
     import { buildMapLibreColours } from "./colourmaps";
     import { createMap } from "./map";
 
-    interface Props {
-        onRangeUpdate: (min: number, max: number) => void;
-        colourmap: string;
-        min: number;
-        max: number;
+    import { userState } from "./state.svelte";
+
+    function onRangeUpdate(newMin: number, newMax: number) {
+        if (userState.min !== newMin || userState.max !== newMax) {
+            userState.min = newMin;
+            userState.max = newMax;
+        }
     }
 
-    let { onRangeUpdate, colourmap, min, max }: Props = $props();
-
-    let mapContainer: HTMLDivElement | undefined = $state();
-    let map: maplibregl.Map | undefined = $state();
-
-    let showTopolite: boolean = $state(true);
+    let mapContainer: HTMLDivElement | undefined;
+    let map: maplibregl.Map | undefined;
 
     onMount(() => {
         if (!mapContainer) return;
@@ -41,7 +39,7 @@
             roll: 0,
         };
 
-        map = createMap(initialPosition, colourmap, mapContainer);
+        map = createMap(initialPosition, userState.colourmap, mapContainer);
 
         map.addControl(
             new maplibregl.NavigationControl({
@@ -271,9 +269,9 @@
 
     $effect(() => {
         //Re-colour map
-        let low = min;
-        let high = max;
-        let cm = colourmap;
+        let low = userState.min;
+        let high = userState.max;
+        let cm = userState.colourmap;
 
         if (map == undefined) {
             return;
