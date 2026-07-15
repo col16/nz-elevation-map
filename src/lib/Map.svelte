@@ -213,30 +213,22 @@
 
         const maxElevationSamples = 2000;
         const canvas = map.getCanvas();
-        const width = canvas.width;
-        const height = canvas.height;
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
 
         const step = Math.sqrt((width * height) / maxElevationSamples);
-
-        const bounds = map.getBounds();
-        const sw = bounds.getSouthWest();
-        const ne = bounds.getNorthEast();
-
         const horizontal_n_steps = Math.ceil(width / step);
         const vertical_n_steps = Math.ceil(height / step);
-        const lngStep = (ne.lng - sw.lng) / horizontal_n_steps;
-        const latStep = (ne.lat - sw.lat) / vertical_n_steps;
 
         let min_val = Infinity;
         let max_val = -Infinity;
 
         for (let i = 0; i <= horizontal_n_steps; i++) {
             for (let j = 0; j <= vertical_n_steps; j++) {
-                const lng = sw.lng + i * lngStep;
-                const lat = sw.lat + j * latStep;
-
-                const elev = map.queryTerrainElevation([lng, lat]);
-
+                const x = Math.min(i * step, width);
+                const y = Math.min(j * step, height);
+                const lngLat = map.unproject([x, y]);
+                const elev = map.queryTerrainElevation(lngLat);
                 if (elev !== null) {
                     if (elev > max_val) max_val = elev;
                     if (elev < min_val) min_val = elev;
