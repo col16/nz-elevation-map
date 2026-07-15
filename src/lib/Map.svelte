@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
 
+    import { replaceState } from "$app/navigation";
+
     import maplibregl from "maplibre-gl";
     import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -195,7 +197,7 @@
         }
 
         // Replace state instead of push state to avoid cluttering browser history on every drag
-        history.replaceState(undefined, "", "?" + params.toString());
+        replaceState("?" + params.toString(), {});
     }
 
     function getCurrentElevationRange() {
