@@ -118,6 +118,4 @@
         color: #333;
         white-space: nowrap;
     }
-
-    }
 </style>
