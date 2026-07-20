@@ -3,7 +3,7 @@
     import Legend from "../lib/Legend.svelte";
 </script>
 
-<main class="relative w-dvh h-dvh">
+<main class="relative w-dvw h-dvh">
     <Map />
     <Legend />
 </main>
