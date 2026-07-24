@@ -1,29 +1,64 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-
+    import { onMount, mount, unmount } from "svelte";
     import { replaceState } from "$app/navigation";
 
     import maplibregl from "maplibre-gl";
+    import type { IControl, Map } from 'maplibre-gl';
     import "maplibre-gl/dist/maplibre-gl.css";
 
     import MaplibreGeocoder from "@maplibre/maplibre-gl-geocoder";
     import type {
         MaplibreGeocoderApi,
         MaplibreGeocoderApiConfig,
-        MaplibreGeocoderFeatureResults,
     } from "@maplibre/maplibre-gl-geocoder";
     import "@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css";
 
     import { buildMapLibreColours } from "./colourmaps";
     import { createMap } from "./map";
-
+    import Legend from "./Legend.svelte";
     import { userState } from "./state.svelte";
+
 
     function onRangeUpdate(newMin: number, newMax: number) {
         if (userState.min !== newMin || userState.max !== newMax) {
             userState.min = newMin;
             userState.max = newMax;
         }
+    }
+
+    class SvelteLegendControl implements IControl {
+      private _map?: Map;
+      private _container?: HTMLElement;
+      private _componentInstance?: Record<string, any>;
+      private _props: Record<string, any>;
+
+      constructor(props: Record<string, any> = {}) {
+        this._props = props;
+      }
+
+      onAdd(map: Map): HTMLElement {
+        this._map = map;
+
+        // Create wrapper container with MapLibre's default control class
+        this._container = document.createElement('div');
+        this._container.className = 'maplibregl-ctrl maplibregl-ctrl-group';
+
+        // Mount your Svelte 5 component inside the container
+        this._componentInstance = mount(Legend, {
+          target: this._container,
+          //props: this._props,
+        });
+
+        return this._container;
+      }
+
+      onRemove(): void {
+        if (this._componentInstance) {
+          unmount(this._componentInstance);
+        }
+        this._container?.parentNode?.removeChild(this._container);
+        this._map = undefined;
+      }
     }
 
     let mapContainer: HTMLDivElement | undefined;
@@ -114,6 +149,7 @@
                 };
             },
         };
+
         map.addControl(
             new MaplibreGeocoder(geocoderApi, {
                 maplibregl,
@@ -124,6 +160,9 @@
             }),
             "top-left",
         );
+
+        const legendControl = new SvelteLegendControl({ title: 'Layer Legend' });
+        map.addControl(legendControl, 'bottom-left');
 
         map.on("idle", () => {
             getCurrentElevationRange();
@@ -141,7 +180,6 @@
                 });
             }
         };
-
         window.addEventListener("hashchange", handleHashChange);
 
         return () => {

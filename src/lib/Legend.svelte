@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { colourmaps } from "./colourmaps";
 
     import { userState } from "./state.svelte";
@@ -74,19 +73,7 @@
 
 <style>
     .legend {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        background: rgba(255, 255, 255, 1);
         padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        z-index: 10;
-        font-family:
-            Helvetica Neue,
-            Arial,
-            Helvetica,
-            sans-serif;
         font-size: 12px;
         display: grid;
         grid-template-columns: min-content min-content;

@@ -1,11 +1,9 @@
 <script lang="ts">
     import Map from "../lib/Map.svelte";
-    import Legend from "../lib/Legend.svelte";
 </script>
 
 <main class="relative w-dvw h-dvh">
     <Map />
-    <Legend />
 </main>
 
 <style>
