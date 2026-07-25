@@ -249,12 +249,11 @@
             return;
         }
 
-        const maxElevationSamples = 2000;
         const canvas = map.getCanvas();
         const width = canvas.clientWidth;
         const height = canvas.clientHeight;
 
-        const step = Math.sqrt((width * height) / maxElevationSamples);
+        const step = 30 * window.devicePixelRatio;
         const horizontal_n_steps = Math.ceil(width / step);
         const vertical_n_steps = Math.ceil(height / step);
 
