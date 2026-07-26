@@ -240,6 +240,10 @@
     }
 
     function getCurrentElevationRange() {
+        if (!userState.auto_elevation_range) return;
+
+        const precision = $derived(userState.max - userState.min < 10 ? 1 : 0);
+
         if (!map) return;
         if (!map.terrain) {
             onRangeUpdate(0, 2000);
@@ -300,6 +304,12 @@
     }
 
     $effect(() => {
+        if (userState.auto_elevation_range) {
+            getCurrentElevationRange();
+        }
+    });
+
+    $effect(() => {
         //Re-colour map
         let low = userState.min;
         let high = userState.max;
@@ -312,12 +322,26 @@
             return;
         }
 
-        map.setPaintProperty("elevation-color", "color-relief-color", [
-            "interpolate",
-            ["linear"],
-            ["elevation"],
-            ...buildMapLibreColours(low, high, cm),
-        ]);
+        if (userState.min < userState.max) {
+            map.setPaintProperty("elevation-color", "color-relief-color", [
+                "interpolate",
+                ["linear"],
+                ["elevation"],
+                ...buildMapLibreColours(low, high, cm),
+            ]);
+            if (
+                map.getLayoutProperty("elevation-color", "visibility") ===
+                "none"
+            ) {
+                map.setLayoutProperty(
+                    "elevation-color",
+                    "visibility",
+                    "visible",
+                );
+            }
+        } else {
+            map.setLayoutProperty("elevation-color", "visibility", "none");
+        }
     });
 </script>
 

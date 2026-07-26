@@ -1,25 +1,19 @@
 <script lang="ts">
     import { colourmaps } from "./colourmaps";
-
     import { userState } from "./state.svelte";
 
     let canvas: HTMLCanvasElement | undefined = $state();
 
     $effect(() => {
-        if (
-            canvas &&
-            userState.min !== undefined &&
-            userState.max !== undefined
-        ) {
-            updateLegend(userState.min, userState.max);
+        if (canvas && userState.colourmap) {
+            updateLegend(userState.colourmap);
         }
     });
 
-    function updateLegend(min: number, max: number) {
+    function updateLegend(colourmap: string) {
         if (!canvas) return;
-        const precision = max - min < 10 ? 1 : 0;
 
-        const cm = colourmaps[userState.colourmap as keyof typeof colourmaps];
+        const cm = colourmaps[colourmap as keyof typeof colourmaps];
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
@@ -37,8 +31,6 @@
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-
-    const precision = $derived(userState.max - userState.min < 10 ? 1 : 0);
 </script>
 
 <div id="legend" class="legend">
@@ -47,25 +39,43 @@
         bind:this={canvas}
     ></canvas>
 
-    <div class="max-label leading-none">
-        <span class="label text-sm leading-none" id="max-elevation-label">
-            {userState.max.toFixed(precision)} mRL
-        </span>
+    <div class="max-label leading-none text-sm text-gray-700 whitespace-nowrap">
+        <label for="max-elevation-input">
+            <input
+                type="number"
+                id="max-elevation-input"
+                bind:value={userState.max}
+                max="4000"
+                min="0.1"
+                step="0.1"
+                oninput={() => (userState.auto_elevation_range = false)}
+            />
+            mRL
+        </label>
     </div>
 
-    <div class="min-label leading-none">
-        <span class="label text-sm leading-none" id="min-elevation-label">
-            {userState.min.toFixed(precision)} mRL
-        </span>
+    <div class="min-label leading-none text-sm text-gray-700 whitespace-nowrap">
+        <label for="min-elevation-input">
+            <input
+                type="number"
+                id="min-elevation-input"
+                bind:value={userState.min}
+                max="3700"
+                min="0"
+                step="0.1"
+                oninput={() => (userState.auto_elevation_range = false)}
+            />
+            mRL
+        </label>
     </div>
 
-    <div class="legend-footer text-gray-400 text-xsm pt-3 whitespace-nowrap">
+    <div class="legend-footer text-gray-700 text-xsm pt-3 whitespace-nowrap">
         <label for="auto-range">
             <input
                 type="checkbox"
                 id="auto-range"
-                class="rounded-sm text-gray-400 w-3 h-3"
-                checked
+                class="rounded-sm w-3 h-3"
+                bind:checked={userState.auto_elevation_range}
             /> Auto elevation range
         </label>
     </div>
@@ -101,8 +111,19 @@
         text-box-trim: both;
     }
 
-    .label {
-        color: #333;
-        white-space: nowrap;
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+        width: 3rem;
+        padding: 3px 5px;
+        border-radius: 4px;
+        font-size: 14px;
+        line-height: 1;
     }
 </style>
