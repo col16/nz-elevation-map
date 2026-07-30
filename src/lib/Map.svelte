@@ -228,8 +228,8 @@
 
         const center = map.getCenter();
         const params = new URLSearchParams([
-            ["lat", center.lat.toFixed(5)],
-            ["lng", center.lng.toFixed(5)],
+            ["lat", center.lat.toFixed(4)],
+            ["lng", center.lng.toFixed(4)],
             ["z", map.getZoom().toFixed(2)],
         ]);
         const bearing = map.getBearing();
