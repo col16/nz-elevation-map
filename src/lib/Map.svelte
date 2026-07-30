@@ -171,6 +171,16 @@
 
         map.on("moveend", updateURLHashWithPosition);
 
+        map.on("terrain", (e) => {
+            if (!map) return;
+            const terrain = map.getTerrain();
+            if (terrain) {
+                userState.auto_elevation_range = true;
+            } else {
+                userState.auto_elevation_range = false;
+            }
+        });
+
         // Handle browser back/forward buttons
         const handleHashChange = () => {
             const pos = getPositionFromURLHash();
