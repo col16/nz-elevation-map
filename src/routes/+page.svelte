@@ -2,6 +2,14 @@
     import Map from "../lib/Map.svelte";
 </script>
 
+<svelte:head>
+    <title>NZ Elevation Map</title>
+    <meta
+        name="description"
+        content="3D map of New Zealand terrain, with colours automatically adusted to match visible elevation range."
+    />
+</svelte:head>
+
 <main class="relative w-dvw h-dvh">
     <Map />
 </main>
