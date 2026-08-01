@@ -2,6 +2,14 @@
     import { colourmaps } from "./colourmaps";
     import { userState } from "./state.svelte";
 
+    let {
+        elevationState,
+        updateURLHashWithPosition,
+    }: {
+        elevationState: { min: number; max: number };
+        updateURLHashWithPosition: Function;
+    } = $props();
+
     let canvas: HTMLCanvasElement | undefined = $state();
 
     $effect(() => {
@@ -44,7 +52,7 @@
             <input
                 type="number"
                 id="max-elevation-input"
-                bind:value={userState.max}
+                bind:value={elevationState.max}
                 max="4000"
                 min="0.1"
                 step="0.1"
@@ -59,7 +67,7 @@
             <input
                 type="number"
                 id="min-elevation-input"
-                bind:value={userState.min}
+                bind:value={elevationState.min}
                 max="3700"
                 min="0"
                 step="0.1"
@@ -76,6 +84,7 @@
                 id="auto-range"
                 class="rounded-sm w-3 h-3"
                 bind:checked={userState.auto_elevation_range}
+                onchange={() => updateURLHashWithPosition()}
             /> Auto elevation range
         </label>
     </div>

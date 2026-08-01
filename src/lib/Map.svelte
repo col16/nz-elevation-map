@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount, mount, unmount } from "svelte";
+    import { onMount, mount, unmount, type ComponentProps } from "svelte";
     import { replaceState } from "$app/navigation";
 
     import maplibregl from "maplibre-gl";
@@ -18,20 +18,19 @@
     import Legend from "./Legend.svelte";
     import { userState } from "./state.svelte";
 
-    function onRangeUpdate(newMin: number, newMax: number) {
-        if (userState.min !== newMin || userState.max !== newMax) {
-            userState.min = newMin;
-            userState.max = newMax;
-        }
-    }
+    const elevationState = $state({
+        min: 0,
+        max: 2000,
+    });
 
+    type LegendProps = ComponentProps<typeof Legend>;
     class SvelteLegendControl implements IControl {
         private _map?: Map;
         private _container?: HTMLElement;
         private _componentInstance?: Record<string, any>;
-        private _props: Record<string, any>;
+        private _props: LegendProps;
 
-        constructor(props: Record<string, any> = {}) {
+        constructor(props: LegendProps) {
             this._props = props;
         }
 
@@ -45,7 +44,7 @@
             // Mount your Svelte 5 component inside the container
             this._componentInstance = mount(Legend, {
                 target: this._container,
-                //props: this._props,
+                props: this._props,
             });
 
             return this._container;
@@ -161,7 +160,8 @@
         );
 
         const legendControl = new SvelteLegendControl({
-            title: "Layer Legend",
+            elevationState,
+            updateURLHashWithPosition,
         });
         map.addControl(legendControl, "bottom-left");
 
@@ -201,12 +201,21 @@
 
     function getPositionFromURLHash() {
         let params = new URLSearchParams(document.location.search);
+
         const zoom = parseFloat(params.get("z") ?? "");
         const lat = parseFloat(params.get("lat") ?? "");
         const lng = parseFloat(params.get("lng") ?? "");
         const bearing = parseFloat(params.get("b") ?? "0");
         const pitch = parseFloat(params.get("p") ?? "0");
         const roll = parseFloat(params.get("r") ?? "0");
+
+        const max = parseFloat(params.get("max") ?? "NaN");
+        const min = parseFloat(params.get("min") ?? "NaN");
+        if (!isNaN(max) && !isNaN(min)) {
+            userState.auto_elevation_range = false;
+            elevationState.max = max;
+            elevationState.min = min;
+        }
 
         // Basic validation
         if (
@@ -244,6 +253,10 @@
         if (roll != 0) {
             params.set("r", roll.toFixed(2));
         }
+        if (!userState.auto_elevation_range) {
+            params.set("min", elevationState.min.toString());
+            params.set("max", elevationState.max.toString());
+        }
 
         // Replace state instead of push state to avoid cluttering browser history on every drag
         replaceState("?" + params.toString(), {});
@@ -252,15 +265,15 @@
     function getCurrentElevationRange() {
         if (!userState.auto_elevation_range) return;
 
-        const precision = $derived(userState.max - userState.min < 10 ? 1 : 0);
-
         if (!map) return;
         if (!map.terrain) {
-            onRangeUpdate(0, 2000);
+            elevationState.min = 0;
+            elevationState.max = 2000;
             return;
         }
         if (map?.getZoom() < 8) {
-            onRangeUpdate(0, 2000);
+            elevationState.min = 0;
+            elevationState.max = 2000;
             return;
         }
 
@@ -310,7 +323,8 @@
             if (min_val == max_val) max_val = min_val + 100;
         }
 
-        onRangeUpdate(min_val, max_val);
+        elevationState.min = min_val;
+        elevationState.max = max_val;
     }
 
     $effect(() => {
@@ -321,8 +335,8 @@
 
     $effect(() => {
         //Re-colour map
-        let low = userState.min;
-        let high = userState.max;
+        let low = elevationState.min;
+        let high = elevationState.max;
         let cm = userState.colourmap;
 
         if (map == undefined) {
@@ -332,7 +346,7 @@
             return;
         }
 
-        if (userState.min < userState.max) {
+        if (elevationState.min < elevationState.max) {
             map.setPaintProperty("elevation-color", "color-relief-color", [
                 "interpolate",
                 ["linear"],
