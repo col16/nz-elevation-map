@@ -23,6 +23,8 @@
         max: 2000,
     });
 
+    const targetLookupTimeInMilliseconds = 150;
+
     type LegendProps = ComponentProps<typeof Legend>;
     class SvelteLegendControl implements IControl {
         private _map?: Map;
@@ -61,6 +63,8 @@
 
     let mapContainer: HTMLDivElement | undefined;
     let map: maplibregl.Map | undefined;
+
+    let needsRecolour = false;
 
     onMount(() => {
         if (!mapContainer) return;
@@ -165,6 +169,12 @@
         });
         map.addControl(legendControl, "bottom-left");
 
+        map.once("load", () => {
+            needsRecolour = true;
+        });
+        map.on("moveend", () => {
+            needsRecolour = true;
+        });
         map.on("idle", () => {
             getCurrentElevationRange();
         });
@@ -263,17 +273,25 @@
     }
 
     function getCurrentElevationRange() {
-        if (!userState.auto_elevation_range) return;
+        if (!needsRecolour) {
+            return;
+        }
 
-        if (!map) return;
+        if (!map || !userState.auto_elevation_range) return;
+
+        //Don't want elevation to be checked a second time while this one is still going
+        needsRecolour = false;
+
         if (!map.terrain) {
             elevationState.min = 0;
             elevationState.max = 2000;
+            recolourMap(0, 2000, userState.colourmap);
             return;
         }
         if (map?.getZoom() < 8) {
             elevationState.min = 0;
             elevationState.max = 2000;
+            recolourMap(0, 2000, userState.colourmap);
             return;
         }
 
@@ -281,17 +299,28 @@
         const width = canvas.clientWidth;
         const height = canvas.clientHeight;
 
-        const step = 30 * window.devicePixelRatio;
-        const horizontal_n_steps = Math.ceil(width / step);
-        const vertical_n_steps = Math.ceil(height / step);
+        const mpp =
+            userState.elevationLookupMillisecondsPerPixel.reduce(
+                (sum, num) => sum + num,
+                0,
+            ) / userState.elevationLookupMillisecondsPerPixel.length;
+        const pixel_budget = targetLookupTimeInMilliseconds / mpp;
+
+        const step_hor = ((width * height) / pixel_budget) ** 0.5;
+
+        const horizontal_n_steps = Math.floor(width / step_hor);
+        const vertical_n_steps = Math.floor(pixel_budget / horizontal_n_steps);
+        const step_ver = height / vertical_n_steps;
+        const offset_hor = (width % step_hor) / 2;
+        const offset_ver = (height % step_ver) / 2;
 
         let min_val = Infinity;
         let max_val = -Infinity;
-
+        const startTime = performance.now();
         for (let i = 0; i <= horizontal_n_steps; i++) {
             for (let j = 0; j <= vertical_n_steps; j++) {
-                const x = Math.min(i * step, width);
-                const y = Math.min(j * step, height);
+                const x = offset_hor + i * step_hor;
+                const y = offset_ver + j * step_ver;
                 const lngLat = map.unproject([x, y]);
                 const elev = map.queryTerrainElevation(lngLat);
                 if (elev !== null) {
@@ -299,6 +328,13 @@
                     if (elev < min_val) min_val = elev;
                 }
             }
+        }
+        const endTime = performance.now();
+        const tpp =
+            (endTime - startTime) / (horizontal_n_steps * vertical_n_steps);
+        userState.elevationLookupMillisecondsPerPixel.push(tpp);
+        while (userState.elevationLookupMillisecondsPerPixel.length > 5) {
+            userState.elevationLookupMillisecondsPerPixel.shift();
         }
 
         if (min_val < 0) min_val = 0;
@@ -325,6 +361,8 @@
 
         elevationState.min = min_val;
         elevationState.max = max_val;
+
+        recolourMap(min_val, max_val, userState.colourmap);
     }
 
     $effect(() => {
@@ -333,25 +371,19 @@
         }
     });
 
-    $effect(() => {
-        //Re-colour map
-        let low = elevationState.min;
-        let high = elevationState.max;
-        let cm = userState.colourmap;
+    function recolourMap(min: number, max: number, colourmap: string) {
+        if (!map || !map.getLayer("elevation-color")) return;
 
-        if (map == undefined) {
-            return;
-        }
         if (!map.isStyleLoaded()) {
             return;
         }
 
-        if (elevationState.min < elevationState.max) {
+        if (min < max) {
             map.setPaintProperty("elevation-color", "color-relief-color", [
                 "interpolate",
                 ["linear"],
                 ["elevation"],
-                ...buildMapLibreColours(low, high, cm),
+                ...buildMapLibreColours(min, max, colourmap),
             ]);
             if (
                 map.getLayoutProperty("elevation-color", "visibility") ===
@@ -366,7 +398,7 @@
         } else {
             map.setLayoutProperty("elevation-color", "visibility", "none");
         }
-    });
+    }
 </script>
 
 <div bind:this={mapContainer} class="w-full h-full"></div>

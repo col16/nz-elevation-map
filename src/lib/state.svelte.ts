@@ -4,4 +4,5 @@ export const userState = $state({
     auto_elevation_range: true,
     colourmap: "naviaW_reversed",
     showTopolite: true,
+    elevationLookupMillisecondsPerPixel: [0.3],
 });
