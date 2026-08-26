@@ -368,6 +368,12 @@
     $effect(() => {
         if (userState.auto_elevation_range) {
             getCurrentElevationRange();
+        } else {
+            recolourMap(
+                elevationState.min,
+                elevationState.max,
+                userState.colourmap,
+            );
         }
     });
 
