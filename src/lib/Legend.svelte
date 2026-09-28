@@ -22,15 +22,16 @@
         if (!canvas) return;
 
         const cm = colourmaps[colourmap as keyof typeof colourmaps];
+        const len = cm.length;
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
         // Create a linear gradient (x0, y0, x1, y1)
         const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
 
-        for (let i = 0; i < 256; i++) {
+        for (let i = 0; i < len; i++) {
             gradient.addColorStop(
-                i / 255,
+                i / (len - 1),
                 `rgb(${cm[i][0] * 255}, ${cm[i][1] * 255}, ${cm[i][2] * 255})`,
             );
         }

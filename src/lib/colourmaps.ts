@@ -5,8 +5,9 @@ export function buildMapLibreColours(
 ): (string | number)[] {
     let result: (string | number)[] = [];
     const cm: number[][] = colourmaps[colourmap as keyof typeof colourmaps];
-    for (let i = 0; i < 256; i++) {
-        let e = min + (i / 255) * (max - min);
+    const len = cm.length;
+    for (let i = 0; i < len; i++) {
+        let e = min + (i / (len - 1)) * (max - min);
         result.push(e);
         result.push(
             `rgb(${cm[i][0] * 255}, ${cm[i][1] * 255}, ${cm[i][2] * 255})`,
@@ -765,6 +766,7 @@ export const colourmaps = {
         [0.077195, 0.317943, 0.506161],
         [0.074303, 0.312754, 0.501291],
         [0.071439, 0.307548, 0.496196],
+        /*
         [0.068614, 0.302327, 0.490934],
         [0.065796, 0.297113, 0.485446],
         [0.063159, 0.291865, 0.479795],
@@ -811,5 +813,6 @@ export const colourmaps = {
         [0.017163, 0.087266, 0.169209],
         [0.016066, 0.082375, 0.161738],
         [0.014333, 0.077207, 0.154315],
+        */
     ],
 };
