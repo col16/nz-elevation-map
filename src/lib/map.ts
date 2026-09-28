@@ -539,7 +539,7 @@ export function createMap(
                     type: "fill",
                     source: "LINZ Basemaps",
                     "source-layer": "buildings",
-                    minzoom: 16,
+                    minzoom: 14,
                     filter: ["all", ["==", "kind", "building"]],
                     layout: {
                         visibility: "visible",
@@ -560,7 +560,7 @@ export function createMap(
                             "#DBDBD9",
                         ],
 
-                        "fill-opacity": 1,
+                        "fill-opacity": 0.3,
                     },
                 },
                 {
@@ -568,13 +568,13 @@ export function createMap(
                     type: "line",
                     source: "LINZ Basemaps",
                     "source-layer": "buildings",
-                    minzoom: 16,
+                    minzoom: 14,
                     filter: ["all", ["==", "kind", "building"]],
                     layout: {
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(152, 145, 145,0.6)",
+                        "line-color": "rgba(0,0,0,0.4)",
                         "line-width": [
                             "interpolate",
                             ["linear"],
@@ -582,7 +582,7 @@ export function createMap(
                             17,
                             0.5,
                             24,
-                            1,
+                            2,
                         ],
                     },
                 },
