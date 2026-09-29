@@ -798,7 +798,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(255, 254, 252, 1)",
+                        "line-color": "rgb(255, 254, 252)",
+                        "line-opacity": 0.5,
                         "line-gap-width": 0,
                         "line-translate-anchor": "map",
                         "line-width": [
@@ -839,7 +840,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(255, 254, 252, 1)",
+                        "line-color": "rgb(255, 254, 252)",
+                        "line-opacity": 0.5,
                         "line-gap-width": 0,
                         "line-translate-anchor": "map",
                         "line-width": [
@@ -922,17 +924,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": [
-                            "interpolate",
-                            ["linear"],
-                            ["zoom"],
-                            10,
-                            "#fff",
-                            17,
-                            "#fff",
-                            19,
-                            "#fff",
-                        ],
+                        "line-color": "rgb(255,255,255)",
+                        "line-opacity": 0.5,
                         "line-gap-width": 0,
                         "line-translate-anchor": "map",
                         "line-width": [
@@ -974,7 +967,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(255, 255, 255, 1)",
+                        "line-color": "rgb(255, 255, 255)",
+                        "line-opacity": 0.5,
                         "line-gap-width": 0,
                         "line-translate-anchor": "map",
                         "line-width": [
@@ -1015,7 +1009,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(255, 255, 255, 1)",
+                        "line-color": "rgb(255, 255, 255)",
+                        "line-opacity": 0.5,
                         "line-gap-width": 0,
                         "line-translate-anchor": "map",
                         "line-width": [
@@ -1099,7 +1094,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(245, 245, 245, 1)",
+                        "line-color": "rgb(245, 245, 245)",
+                        "line-opacity": 0.5,
                         "line-gap-width": 0,
                         "line-translate-anchor": "map",
                         "line-width": [
@@ -1142,7 +1138,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(180, 180, 180, 1)",
+                        "line-color": "rgb(180, 180, 180)",
+                        "line-opacity": 0.5,
                         "line-width": 1,
                     },
                 },
@@ -1164,7 +1161,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(180, 180, 180, 1)",
+                        "line-color": "rgb(180, 180, 180)",
+                        "line-opacity": 0.5,
                         "line-width": 2,
                         "line-dasharray": [7, 3],
                     },
@@ -1186,7 +1184,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(180, 180, 180, 1)",
+                        "line-color": "rgb(180, 180, 180)",
+                        "line-opacity": 0.5,
                         "line-width": [
                             "interpolate",
                             ["linear"],
@@ -1428,7 +1427,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(120, 120, 120, 1)",
+                        "line-color": "rgb(120, 120, 120)",
+                        "line-opacity": 0.5,
                         "line-width": [
                             "interpolate",
                             ["linear"],
@@ -1469,7 +1469,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(120, 120, 120, 1)",
+                        "line-color": "rgb(120, 120, 120)",
+                        "line-opacity": 0.5,
                         "line-width": [
                             "interpolate",
                             ["linear"],
@@ -1510,7 +1511,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(120, 120, 120, 1)",
+                        "line-color": "rgb(120, 120, 120)",
+                        "line-opacity": 0.5,
                         "line-width": [
                             "interpolate",
                             ["linear"],
@@ -1552,7 +1554,8 @@ export function createMap(
                     },
                     paint: {
                         "line-blur": 0,
-                        "line-color": "rgba(190, 190, 190, 1)",
+                        "line-color": "rgb(190, 190, 190)",
+                        "line-opacity": 0.5,
                         "line-width": [
                             "interpolate",
                             ["linear"],
@@ -1593,7 +1596,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(190, 190, 190, 1)",
+                        "line-color": "rgb(190, 190, 190)",
+                        "line-opacity": 0.5,
                         "line-width": [
                             "interpolate",
                             ["linear"],
@@ -1634,7 +1638,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(176, 176, 176, 1)",
+                        "line-color": "rgb(176, 176, 176)",
+                        "line-opacity": 0.5,
                         "line-width": [
                             "interpolate",
                             ["linear"],
@@ -1675,7 +1680,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(168, 168, 168, 1)",
+                        "line-color": "rgb(168, 168, 168)",
+                        "line-opacity": 0.5,
                         "line-width": [
                             "interpolate",
                             ["linear"],
@@ -1710,7 +1716,8 @@ export function createMap(
                         visibility: "visible",
                     },
                     paint: {
-                        "line-color": "rgba(220, 220, 220, 1)",
+                        "line-color": "rgb(220, 220, 220)",
+                        "line-opacity": 0.5,
                         "line-width": [
                             "interpolate",
                             ["linear"],
