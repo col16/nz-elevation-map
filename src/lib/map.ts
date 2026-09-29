@@ -520,7 +520,7 @@ export function createMap(
                             24,
                             "rgba(170, 170, 170, 1)",
                         ],
-
+                        "line-opacity": 0.5,
                         "line-width": [
                             "interpolate",
                             ["linear"],
